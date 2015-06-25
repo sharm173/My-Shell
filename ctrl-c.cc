@@ -24,7 +24,7 @@ main()
 		char s[ 20 ];
 		printf( "prompt>");
 		fflush( stdout );
-		fgets( s, 19, stdin );
+		fgets( s, 19, stdin ); // Use fgets instead of gets
 
 		if ( !strcmp( s, "exit" ) ) {
 			printf( "Bye!\n");
