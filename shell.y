@@ -1,4 +1,3 @@
-
 /*
  * CS-252
  * shell.y: parser for shell
@@ -13,7 +12,7 @@
 
 %token	<string_val> WORD
 
-%token 	NOTOKEN GREAT NEWLINE
+%token 	NOTOKEN GREAT AND LESS GREATGREAT GREATAND GREATGREATAND PIPE NEWLINE
 
 %union	{
 		char   *string_val;
