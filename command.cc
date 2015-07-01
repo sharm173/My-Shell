@@ -170,6 +170,7 @@ int yyparse(void);
 main()
 {
 	Command::_currentCommand.prompt();
+fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
 }
 
