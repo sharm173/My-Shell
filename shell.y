@@ -55,7 +55,7 @@ io_modifier:
 	GREATGREAT WORD 
 	{
 	printf("   Yacc: append output \"%s\"\n", $2);
-	Command::_currentCommand._outFile = $2; 
+	Command::_currentCommand._outFile = strdup($2); 
 	}
 	| GREAT WORD
 	{
