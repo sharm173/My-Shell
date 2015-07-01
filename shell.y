@@ -36,14 +36,16 @@ goal:
 
 arg_list:
 	arg_list WORD{
-Command::_currentSimpleCommand = new SimpleCommand();
+
 fprintf(stderr,"%p\n",Command::_currentSimpleCommand );
 Command::_currentSimpleCommand->insertArgument($2);}
 	| /*empty*/
 	;
 
 cmd_and_args:
-	WORD arg_list {Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);}
+	WORD arg_list {
+Command::_currentSimpleCommand = new SimpleCommand();
+Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);}
 	;
 
 pipe_list:
