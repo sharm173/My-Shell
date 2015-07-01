@@ -37,6 +37,7 @@ goal:
 arg_list:
 	arg_list WORD{
 Command::_currentSimpleCommand = new SimpleCommand();
+//Command::_numberOfSimpleCommands++;
 Command::_currentSimpleCommand->insertArgument($2);}
 	| /*empty*/
 	;
