@@ -44,7 +44,8 @@ Command::_currentSimpleCommand->insertArgument($2);}
 
 cmd_and_args:
 	WORD arg_list {
-Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);}
+Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+Command::_currentSimpleCommand->insertArgument($1);}
 	;
 
 pipe_list:
