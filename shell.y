@@ -102,6 +102,7 @@ command_line:
 	}
 	| NEWLINE /*accept empty cmd line*/
 	| error NEWLINE{yyerrok;}
+	;
 	/*error recovery*/
 command_list :
         command_list command_line
