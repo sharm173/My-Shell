@@ -31,7 +31,7 @@ void myunputc(int c) {
      	}	
 
 ">&"	{
-	return GREATAND;
+	return GREATAMPERSAND;
 	}
 
 ">>"	{
@@ -39,10 +39,10 @@ void myunputc(int c) {
 	}
 
 ">>&"	{
-	return GREATGREATAND;
+	return GREATGREATAMPERSAND;
 	}
 "&"	{
-		return AND;
+		return AMPERSAND;
 	}
 
 "|"     {

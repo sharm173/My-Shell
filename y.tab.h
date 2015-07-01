@@ -41,11 +41,11 @@
      WORD = 258,
      NOTOKEN = 259,
      GREAT = 260,
-     AND = 261,
+     AMPERSAND = 261,
      LESS = 262,
      GREATGREAT = 263,
-     GREATAND = 264,
-     GREATGREATAND = 265,
+     GREATAMPERSAND = 264,
+     GREATGREATAMPERSAND = 265,
      PIPE = 266,
      NEWLINE = 267
    };
@@ -54,11 +54,11 @@
 #define WORD 258
 #define NOTOKEN 259
 #define GREAT 260
-#define AND 261
+#define AMPERSAND 261
 #define LESS 262
 #define GREATGREAT 263
-#define GREATAND 264
-#define GREATGREATAND 265
+#define GREATAMPERSAND 264
+#define GREATGREATAMPERSAND 265
 #define PIPE 266
 #define NEWLINE 267
 
