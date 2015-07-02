@@ -46,14 +46,18 @@ argument:
 	WORD
 	{
 	Command::_currentSimpleCommand->insertArgument($1);
-	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+//	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
 	}
 	;
 cmd_and_args:
-	WORD arg_list {
-			Command::_currentSimpleCommand = new SimpleCommand();
-			Command::_currentSimpleCommand->insertArgument($1);
+	command_word arg_list {
 	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+	}
+	;
+command_word:
+	WORD {
+	   Command::_currentSimpleCommand = new SimpleCommand();
+           Command::_currentSimpleCommand->insertArgument($1);
 	}
 	;
 
