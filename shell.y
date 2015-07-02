@@ -41,7 +41,10 @@ arg_list:
 
 argument: 
 	WORD
-	{Command::_currentSimpleCommand->insertArgument($1);}
+	{
+	Command::_currentSimpleCommand->insertArgument($1);
+	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+	}
 	;
 cmd_and_args:
 	WORD arg_list {
