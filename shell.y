@@ -36,7 +36,7 @@ goal:
 
 arg_list:
 	arg_list argument
-	| /*empty*/ 
+//	| /*empty*/ 
 	;
 
 argument: 
