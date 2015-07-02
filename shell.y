@@ -52,6 +52,12 @@ cmd_and_args:
 			Command::_currentSimpleCommand->insertArgument($1);
 //Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
 	}
+	|
+	WORD {
+	Command::_currentSimpleCommand = new SimpleCommand();
+	Command::_currentSimpleCommand->insertArgument($1);
+	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+	}
 	;
 
 pipe_list:
