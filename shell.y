@@ -37,9 +37,9 @@ goal:
 arg_list:
 	arg_list argument
 	| /*empty*/
-	{
-	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
-	} 
+//	{
+//	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+//	} 
 	;
 
 argument: 
