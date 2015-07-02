@@ -36,7 +36,10 @@ goal:
 
 arg_list:
 	arg_list argument
-//	| /*empty*/ 
+	| /*empty*/
+	{
+	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+	} 
 	;
 
 argument: 
@@ -51,12 +54,6 @@ cmd_and_args:
 			Command::_currentSimpleCommand = new SimpleCommand();
 			Command::_currentSimpleCommand->insertArgument($1);
 //Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
-	}
-	|
-	WORD {
-	Command::_currentSimpleCommand = new SimpleCommand();
-	Command::_currentSimpleCommand->insertArgument($1);
-	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
 	}
 	;
 
