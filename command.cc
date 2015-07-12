@@ -210,8 +210,8 @@ Command::execute()
 	
 	}// if/else
 	//Redirect output
-//	dup2(fdout,1);
-//	close(fdout);
+	dup2(fdout,1);
+	close(fdout);
 	
 	//create child process
 	ret=fork();	
