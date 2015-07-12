@@ -215,7 +215,7 @@ Command::execute()
 
 	// Clear to prepare for next command
 //	clear();
-		
+	sleep(.1);		
 	// Print new prompt
 	prompt();
 }
