@@ -141,7 +141,7 @@ Command::execute()
 		return;
 	}
 	
-	printf("/n");
+	printf("\n");
 
 	// Print contents of Command data structure
 //	print();
