@@ -197,7 +197,8 @@ Command::execute()
 	else {
 	fderr=dup(tmperr);
 	}
-	
+	dup2(fderr, 2);
+	close(fderr);	
 	}
 	
 	else {
