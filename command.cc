@@ -188,8 +188,11 @@ Command::execute()
 	fdout=dup(tmpout);
 	}
 	
-	if(_errFile) {
+	if(_errFile && !_append) {
 	fderr=open(_errFile,O_WRONLY|O_CREAT|O_TRUNC,0777);
+	}
+	else if(_errFile && _append) {
+	fderr=open(_errFile,O_WRONLY|O_CREAT|O_APPEND,0777);
 	}
 	else {
 	fderr=dup(tmperr);
