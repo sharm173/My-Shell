@@ -220,6 +220,7 @@ Command::execute()
 	}
 	
 	else {
+	
 	prompt();
 	}
 	// Clear to prepare for next command
