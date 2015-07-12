@@ -16,7 +16,9 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <signal.h>
-
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <pwd.h>
 #include "command.h"
 
 SimpleCommand::SimpleCommand()
@@ -146,6 +148,68 @@ Command::execute()
 	// For every simple command fork a new process
 	// Setup i/o redirection
 	// and call exec
+
+
+	int tmpin=dup(0);
+	int tmpout=dup(1);
+	int fdin;
+
+	if(_inputFile) {
+	   fdin = open(_inputFile,O_RDONLY,0777);
+	}
+
+	else {
+	fdin=dup(tmpin);
+	}
+	
+	int ret;
+	int fdout;
+	
+	for(int i = 0; i < _numberOfSimpleCommands; i++) {
+	
+	//redirect input
+	dup2(fdin, 0);
+	close(fdin);
+	
+	//setup output
+	if(i == _numberOfSimpleCommands -1) {
+	//Last simple command
+	if(_outFile) {
+	fdout=open(_outFile,O_WRONLY|O_CREAT|O_TRUNC,0777);
+	}
+	else {
+	//Use default output
+	fdout=dup(tmpout);
+	}
+	}
+	
+	else {
+	//Not last
+	//create pipe
+	int fdpipe[2];
+	pipe(fdpipe);
+	fdout=fdpipe[1];
+	fdin=fdpipe[0];
+	
+	}// if/else
+	//Redirect output
+	dup2(fdout,1);
+	close(fdout);
+	
+	//create child process
+	ret=fork();	
+	if(ret==0) {
+	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
+	perror("execvp");
+	_exit(1);
+	}
+	}//for
+	
+	//restore in/out 
+	dup2(tmpin,0);
+	dup2(tmpout,1);
+	close(tmpin);
+	close(tmpout);
 
 	// Clear to prepare for next command
 	clear();
