@@ -140,6 +140,8 @@ Command::execute()
 		prompt();
 		return;
 	}
+	
+	printf("/n");
 
 	// Print contents of Command data structure
 //	print();
