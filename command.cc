@@ -177,7 +177,7 @@ Command::execute()
 	//setup output
 	if(i == _numberOfSimpleCommands -1) {
 	//Last simple command
-	if(_outFile) {
+	if(_outFile && !_append) {
 	fdout=open(_outFile,O_WRONLY|O_CREAT|O_TRUNC,0777);
 	}
 	if(_outFile && _append) {
