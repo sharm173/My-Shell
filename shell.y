@@ -69,29 +69,29 @@ pipe_list:
 io_modifier:
 	GREATGREAT WORD 
 	{
-	printf("   Yacc: append output \"%s\"\n", $2);
+//	printf("   Yacc: append output \"%s\"\n", $2);
 	Command::_currentCommand._outFile = strdup($2); 
 	}
 	| GREAT WORD
 	{
-        printf("   Yacc: insert output \"%s\"\n", $2);
+  //      printf("   Yacc: insert output \"%s\"\n", $2);
         Command::_currentCommand._outFile = strdup($2);
         }
 	| GREATGREATAMPERSAND WORD
 	{
-        printf("   Yacc: append output and stderr \"%s\"\n", $2);
+    //    printf("   Yacc: append output and stderr \"%s\"\n", $2);
         Command::_currentCommand._outFile = strdup($2);
 	Command::_currentCommand._errFile = strdup($2);
         }
 	| GREATAMPERSAND WORD
 	{
-	printf("   Yacc: insert output and stderr \"%s\"\n", $2);
+//	printf("   Yacc: insert output and stderr \"%s\"\n", $2);
         Command::_currentCommand._outFile = strdup($2);
 	Command::_currentCommand._errFile = strdup($2);	
 	}
 	| LESS WORD
 	{
-        printf("   Yacc: get input \"%s\"\n", $2);
+  //      printf("   Yacc: get input \"%s\"\n", $2);
         Command::_currentCommand._inputFile = strdup($2);
         }
 	;
@@ -112,7 +112,7 @@ background_optional:
 command_line:
 	pipe_list io_modifier_list background_optional NEWLINE 
 	{
-	printf("   Yacc: Execute command\n");
+//	printf("   Yacc: Execute command\n");
 	Command::_currentCommand.execute();
 	}
 	| NEWLINE /*accept empty cmd line*/
