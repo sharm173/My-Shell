@@ -80,6 +80,7 @@ io_modifier:
 	{
   //      printf("   Yacc: insert output \"%s\"\n", $2);
        // Command::_numOut++;
+	Command::_currentCommand._append = 0;
 	        if (Command::_currentCommand._outFile)
                 yyerror("Ambiguous output redirect.\n");
 	Command::_currentCommand._outFile = strdup($2);
@@ -96,6 +97,7 @@ io_modifier:
         }
 	| GREATAMPERSAND WORD
 	{
+	Command::_currentCommand._append = 0;
 //	printf("   Yacc: insert output and stderr \"%s\"\n", $2);
         //Command::_numOut++;
         if (Command::_currentCommand._outFile)
