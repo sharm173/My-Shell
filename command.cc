@@ -211,9 +211,7 @@ Command::execute()
 	}// if/else
 	//Redirect output
 //	dup2(fdout,1);
-//	dup2(fderr,2);
 //	close(fdout);
-//	close(fderr);
 	
 	//create child process
 	ret=fork();	
@@ -226,10 +224,10 @@ Command::execute()
 	perror("execvp");
 	_exit(1);
 	}
-        dup2(fdout,1);
-        dup2(fderr,2);
-        close(fdout);
-        close(fderr);
+//        dup2(fdout,1);
+  //      dup2(fderr,2);
+    //    close(fdout);
+      //  close(fderr);
 	}//for
 	
 	//restore in/out 
