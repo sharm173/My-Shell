@@ -180,7 +180,7 @@ Command::execute()
 	if(_outFile && !_append) {
 	fdout=open(_outFile,O_WRONLY|O_CREAT|O_TRUNC,0777);
 	}
-	if(_outFile && _append) {
+	else if(_outFile && _append) {
 	fdout=open(_outFile,O_WRONLY|O_CREAT|O_APPEND,0777);
 	}
 	else {
