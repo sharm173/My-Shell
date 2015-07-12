@@ -223,8 +223,12 @@ Command::execute()
 void
 Command::prompt()
 {
+if ( isatty(0) ) {
+//  Print prompt
+
 	printf("myshell>");
 	fflush(stdout);
+}
 }
 
 Command Command::_currentCommand;
