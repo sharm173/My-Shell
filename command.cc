@@ -210,13 +210,17 @@ Command::execute()
 	
 	}// if/else
 	//Redirect output
-	dup2(fdout,1);
-	dup2(fderr,2);
-	close(fdout);
-	close(fderr);
+//	dup2(fdout,1);
+//	dup2(fderr,2);
+//	close(fdout);
+//	close(fderr);
 	
 	//create child process
 	ret=fork();	
+        dup2(fdout,1);
+        dup2(fderr,2);
+        close(fdout);
+        close(fderr);
 	if(ret==0) {
 	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
 	perror("execvp");
