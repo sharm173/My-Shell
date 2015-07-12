@@ -154,6 +154,7 @@ Command::execute()
 
 	int tmpin=dup(0);
 	int tmpout=dup(1);
+	int tmperr = dup(2);
 	int fdin;
 
 	if(_inputFile) {
@@ -166,7 +167,7 @@ Command::execute()
 	
 	int ret;
 	int fdout;
-	
+	int fderr;	
 	for(int i = 0; i < _numberOfSimpleCommands; i++) {
 	
 	//redirect input
@@ -183,6 +184,14 @@ Command::execute()
 	//Use default output
 	fdout=dup(tmpout);
 	}
+	
+	if(_errFile) {
+	fderr=open(_errFile,O_WRONLY|O_CREAT|O_TRUNC,0777);
+	}
+	else {
+	fderr=dup(tmperr);
+	}
+	
 	}
 	
 	else {
@@ -196,7 +205,9 @@ Command::execute()
 	}// if/else
 	//Redirect output
 	dup2(fdout,1);
+	dup2(fderr,2);
 	close(fdout);
+	close(fderr);
 	
 	//create child process
 	ret=fork();	
@@ -212,6 +223,7 @@ Command::execute()
 	dup2(tmpout,1);
 	close(tmpin);
 	close(tmpout);
+	close(tmperr);
 
 	if(!_background) {
 	waitpid(ret,0, 0);
