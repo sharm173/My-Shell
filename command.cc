@@ -213,11 +213,20 @@ Command::execute()
 	close(tmpin);
 	close(tmpout);
 
+	if(!_background) {
+	waitpid(ret,0, 0);
+	clear();
+	prompt();
+	}
+	
+	else {
+	prompt();
+	}
 	// Clear to prepare for next command
 //	clear();
-	sleep(.1);		
+//	sleep(.1);		
 	// Print new prompt
-	prompt();
+//	prompt();
 }
 
 // Shell implementation
