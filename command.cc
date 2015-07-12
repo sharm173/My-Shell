@@ -141,7 +141,7 @@ Command::execute()
 		return;
 	}
 	
-	printf("\n");
+//	printf("\n");
 
 	// Print contents of Command data structure
 //	print();
@@ -214,8 +214,8 @@ Command::execute()
 	close(tmpout);
 
 	// Clear to prepare for next command
-	clear();
-	
+//	clear();
+	sleep(3);	
 	// Print new prompt
 	prompt();
 }
