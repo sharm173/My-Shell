@@ -155,7 +155,7 @@ Command::execute()
 	int fdin;
 
 	if(_inputFile) {
-	   fdin = open(_inputFile,O_RDONLY,0777);
+	   fdin = open(_inputFile,O_RDONLY|O_CREAT,0777);
 	}
 
 	else {
