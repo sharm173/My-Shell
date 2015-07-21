@@ -280,12 +280,9 @@ int yyparse(void);
 
 main()
 {
-	Command::_currentCommand.prompt();
-//fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
-	yyparse();
 signal( SIGINT, disp );
         for (;;) {
- 
+        
                 char s[ 20 ];
                 printf( "prompt>");
                 fflush( stdout );
@@ -296,5 +293,9 @@ signal( SIGINT, disp );
                         exit( 1 );
                 }
         }
+
+	Command::_currentCommand.prompt();
+//fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
+	yyparse();
 }
 
