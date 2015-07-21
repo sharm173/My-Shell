@@ -23,7 +23,7 @@
 
 extern "C" void disp( int sig )
 {
-	//fprintf( stderr, "\n      Ouch!\n");
+	fprintf( stderr, "\n");
 }
 
 SimpleCommand::SimpleCommand()
