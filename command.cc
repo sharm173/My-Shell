@@ -283,7 +283,7 @@ main()
 	Command::_currentCommand.prompt();
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
-sigset( SIGINT, disp );
+signal( SIGINT, disp );
         for (;;) {
  
                 char s[ 20 ];
