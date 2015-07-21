@@ -25,6 +25,7 @@
 #include "command.h"
 #include<string.h>
 #include <regex.h>
+#include <assert.h>
 void yyerror(const char * s);
 void expandWildcardsIfNecessary(char*);
 int yylex();
@@ -230,7 +231,9 @@ void expandWildcardsIfNecessary(char *arg) {
 
 
 	struct dirent * ent;
-	
+	int nEntries = 0;
+	int maxEntries = 20;
+	char ** array = (char**) malloc(maxEntries*sizeof(char*));	
 	while ( (ent = readdir(dir))!= NULL) {
 		// Check if name matches
 		regmatch_t match;   
@@ -238,7 +241,17 @@ void expandWildcardsIfNecessary(char *arg) {
         
 		if (expbuf ==0 ) {
 			// Add argument
-			Command::_currentSimpleCommand->insertArgument(strdup(ent->d_name));
+		if (nEntries == maxEntries) {
+			maxEntries *=2;
+			array = (char**)realloc(array, maxEntries*sizeof(char*));
+			assert(array!=NULL);
+		}
+
+	array[nEntries]= strdup(ent->d_name);
+	nEntries++;
+		
+
+		//Command::_currentSimpleCommand->insertArgument(strdup(ent->d_name));
 		}
 		
 		else {
@@ -249,7 +262,32 @@ void expandWildcardsIfNecessary(char *arg) {
 	}
 	regfree(&re);
 	closedir(dir);
+//BUBBLE SORT ARRAY
 
+	for (int i=0; i < nEntries; i++) {
+	
+		for(int j = 0; j < nEntries-1; j++) {
+			if(strcmp(array[j],array[j+1]) > 0) {
+				//swap
+				char *temp = array[j];
+				array[j] = array[j+1];
+				array[j+1] = temp;
+			
+			}
+		
+		
+		}
+	
+	}
+	
+
+	
+	// Add arguments
+	for (int i = 0; i < nEntries; i++) {
+		Command::_currentSimpleCommand->insertArgument(array[i]);
+	}
+	
+	free(array);
 
 
 }
