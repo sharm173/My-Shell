@@ -21,6 +21,11 @@
 #include <pwd.h>
 #include "command.h"
 
+extern "C" void disp( int sig )
+{
+	//fprintf( stderr, "\n      Ouch!\n");
+}
+
 SimpleCommand::SimpleCommand()
 {
 	// Creat available space for 5 arguments
@@ -275,6 +280,20 @@ int yyparse(void);
 
 main()
 {
+//cntrl-c
+sigset( SIGINT, disp );
+	for (;;) {
+		
+		char s[ 20 ];
+		printf( "prompt>");
+		fflush( stdout );
+		fgets( s, 19, stdin ); // Use fgets instead of gets
+
+		if ( !strcmp( s, "exit" ) ) {
+			printf( "Bye!\n");
+			exit( 1 );
+		}
+	}
 	Command::_currentCommand.prompt();
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
