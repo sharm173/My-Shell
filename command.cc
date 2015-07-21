@@ -147,9 +147,18 @@ Command::execute()
 		prompt();
 		return;
 	}
-	
-//	printf("\n");
 
+	if(strcmp(_simpleCommands[0]->_arguments[0],"exit\n") == 0) {
+	
+		printf("Ciao\n\n");
+		exit(1);
+	
+	}
+
+
+
+	
+//print("\n");
 	// Print contents of Command data structure
 //	print();
 
