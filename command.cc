@@ -280,22 +280,21 @@ int yyparse(void);
 
 main()
 {
-//cntrl-c
-sigset( SIGINT, disp );
-	for (;;) {
-		
-		char s[ 20 ];
-		printf( "prompt>");
-		fflush( stdout );
-		fgets( s, 19, stdin ); // Use fgets instead of gets
-
-		if ( !strcmp( s, "exit\n" ) ) {
-			printf( "Bye!\n");
-			exit( 1 );
-		}
-	}
 	Command::_currentCommand.prompt();
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
+sigset( SIGINT, disp );
+        for (;;) {
+ 
+                char s[ 20 ];
+                printf( "prompt>");
+                fflush( stdout );
+                fgets( s, 19, stdin ); // Use fgets instead of gets
+
+                if ( !strcmp( s, "exit\n" ) ) {
+                        printf( "Bye!\n");
+                        exit( 1 );
+                }
+        }
 }
 
