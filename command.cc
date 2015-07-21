@@ -23,7 +23,9 @@
 
 extern "C" void disp( int sig )
 {
-	fprintf( stderr, "\n");
+//	fprintf( stderr, "\n");
+    printf("\n");
+    Command::_currentCommand.prompt();
 }
 
 SimpleCommand::SimpleCommand()
@@ -140,6 +142,7 @@ Command::print()
 void
 Command::execute()
 {
+signal( SIGINT, disp );
 	// Don't do anything if there are no simple commands
 	if ( _numberOfSimpleCommands == 0 ) {
 		prompt();
@@ -245,6 +248,7 @@ Command::execute()
 
 	if(!_background) {
 	waitpid(ret,0, 0);
+	
 	clear();
 	prompt();
 	}
@@ -280,20 +284,6 @@ int yyparse(void);
 
 main()
 {
-signal( SIGINT, disp );
-        for (;;) {
-        
-                char s[ 20 ];
-                printf( "prompt>");
-                fflush( stdout );
-                fgets( s, 19, stdin ); // Use fgets instead of gets
-
-                if ( !strcmp( s, "exit\n" ) ) {
-                        printf( "Bye!\n");
-                        exit( 1 );
-                }
-        }
-
 	Command::_currentCommand.prompt();
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
