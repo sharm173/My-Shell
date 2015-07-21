@@ -148,7 +148,7 @@ Command::execute()
 		return;
 	}
 
-	if(strcmp(_simpleCommands[0]->_arguments[0],"exit\n") == 0) {
+	if(strcmp(_simpleCommands[0]->_arguments[0],"exit") == 0) {
 	
 		printf("Ciao\n\n");
 		exit(1);
