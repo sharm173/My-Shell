@@ -142,7 +142,6 @@ Command::print()
 void
 Command::execute()
 {
-signal( SIGINT, disp );
 	// Don't do anything if there are no simple commands
 	if ( _numberOfSimpleCommands == 0 ) {
 		prompt();
@@ -285,7 +284,9 @@ int yyparse(void);
 main()
 {
 	Command::_currentCommand.prompt();
+	signal( SIGINT, disp );
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
+
 }
 
