@@ -20,10 +20,13 @@
 
 %{
 //#define yylex yylex
+#include <dirent.h>
 #include <stdio.h>
 #include "command.h"
 #include<string.h>
+#include <regex.h>
 void yyerror(const char * s);
+void expandWildcardsIfNecessary(char*);
 int yylex();
 
 %}
@@ -45,8 +48,10 @@ arg_list:
 argument: 
 	WORD
 	{
-	Command::_currentSimpleCommand->insertArgument($1);
-//	Command::_currentCommand.insertSimpleCommand(Command::_currentSimpleCommand);
+	
+	expandWildcardsIfNecessary($1);
+	
+//	Command::_currentSimpleCommand->insertArgument($1);
 	}
 	;
 cmd_and_args:
@@ -150,6 +155,103 @@ void
 yyerror(const char * s)
 {
 	fprintf(stderr,"%s", s);
+}
+//ADD FUNCTIONS
+
+void expandWildcardsIfNecessary(char *arg) {
+
+	if(strchr(arg,'*') == NULL && strchr(arg,'?') == NULL) {
+		Command::_currentSimpleCommand->insertArgument(arg);
+		return;
+	}
+	
+	char * reg = (char*)malloc(2*strlen(arg)+10);
+	char * a = arg;
+	char * r = reg;
+	*r = '^'; 
+	r++; // match beginning of line
+	while (*a) {
+
+		if (*a == '*') {
+			 *r='.';
+			 r++;
+			 *r='*';
+			 r++; 
+		}
+
+		else if (*a == '?') {
+			 *r='.';
+			 r++;
+		}
+
+
+		else if (*a == '.') {
+			 *r='\\';
+			 r++; 
+			 *r='.';
+			 r++;
+		}
+
+		else { 
+			*r=*a;
+			r++;
+		}
+
+		a++;
+	}
+
+	*r='$';
+	r++;
+	*r=0;   // match end of line and add null char
+
+// 2. compile regular expression. See lab3-src/regular.cc
+	
+	char regExpComplete[ 1024 ];
+        sprintf(regExpComplete, "^%s$", reg );
+	regex_t re;
+	//char * instead of int originally
+
+	int expbuf = regcomp(&re, regExpComplete, REG_EXTENDED|REG_NOSUB);
+
+	if (expbuf!=0) {
+		perror("compile");
+		return;
+	}
+
+// 3. List directory and add as arguments the entries
+// that match the regular expression
+
+	DIR * dir = opendir(".");
+	if (dir == NULL) {
+		perror("opendir");
+		return;
+	}
+
+
+
+	struct dirent * ent;
+	
+	while ( (ent = readdir(dir))!= NULL) {
+		// Check if name matches
+		regmatch_t match;   
+        	expbuf = regexec( &re, ent->d_name, 1, &match, 0 );
+        
+		if (expbuf ==0 ) {
+			// Add argument
+			Command::_currentSimpleCommand->insertArgument(strdup(ent->d_name));
+		}
+		
+		else {
+		//does not match
+		
+		}
+		
+	}
+	regfree(&re);
+	closedir(dir);
+
+
+
 }
 
 #if 0
