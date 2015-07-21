@@ -162,7 +162,7 @@ Command::execute()
 		char **a = environ;
 		while(*a != NULL) {
 			
-			printf("%s",*a);
+			printf("%s\n",*a);
 			a++;
 		}
 	        clear();
