@@ -289,7 +289,7 @@ sigset( SIGINT, disp );
 		fflush( stdout );
 		fgets( s, 19, stdin ); // Use fgets instead of gets
 
-		if ( !strcmp( s, "exit" ) ) {
+		if ( !strcmp( s, "exit\n" ) ) {
 			printf( "Bye!\n");
 			exit( 1 );
 		}
