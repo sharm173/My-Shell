@@ -21,6 +21,7 @@
 #include <pwd.h>
 #include "command.h"
 
+
 extern "C" void disp( int sig )
 {
 //	fprintf( stderr, "\n");
@@ -154,7 +155,20 @@ Command::execute()
 		exit(1);
 	
 	}
-
+	
+	if(strcmp(_simpleCommands[0]->_arguments[0],"printenv") == 0) {
+	//print env variables
+	
+		char **a = environ;
+		while(*a != NULL) {
+			
+			printf("%s",*a);
+			a++;
+		}
+	        clear();
+        	prompt();
+        	return;
+	}
 
 
 	
