@@ -284,7 +284,21 @@ void expandWildcardsIfNecessary(char *arg) {
 	
 	// Add arguments
 	for (int i = 0; i < nEntries; i++) {
+	
+		if(array[i][0] == '.') {
+		
+			if(arg[0] == '.') {
+
+			Command::_currentSimpleCommand->insertArgument(array[i]);
+			
+			}
+
+		}
+		else {
 		Command::_currentSimpleCommand->insertArgument(array[i]);
+		
+		}
+		
 	}
 	
 	free(array);
