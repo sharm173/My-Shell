@@ -234,7 +234,25 @@ Command::execute()
         prompt();
         return;
 	}
+
+	if (strcmp(_simpleCommands[0]->_arguments[0], "cd") == 0) {
 	
+	char *home = getenv("HOME");
+	int errcd;
+	if(_simpleCommands[0]->_numberOfArguments > 1){
+	errcd = chdir(_simpleCommands[0]->_arguments[1]);
+		
+	}
+	
+	else {
+	errcd = chdir(home);
+	}
+
+	if(errcd != 0 ) perror("chdir");
+        clear();
+        prompt();
+        return;
+	}	
 //print("\n");
 	// Print contents of Command data structure
 //	print();
