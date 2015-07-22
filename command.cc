@@ -158,6 +158,7 @@ Command::execute()
 {
 	// Don't do anything if there are no simple commands
 	if ( _numberOfSimpleCommands == 0 ) {
+		
 		prompt();
 		return;
 	}
@@ -183,7 +184,14 @@ Command::execute()
         	return;
 	}
 
-
+	if (strcmp(_simpleCommands[0]->_arguments[0], "setenv") == 0) {
+	int set =setenv(_simpleCommands[0]->_arguments[1], _simpleCommands[0]->_arguments[2], 1);
+	
+	if(set != 0) perror("setenv");
+	clear();
+	prompt();
+	return;
+	}
 	
 //print("\n");
 	// Print contents of Command data structure
