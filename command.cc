@@ -20,7 +20,7 @@
 #include <fcntl.h>
 #include <pwd.h>
 #include "command.h"
-
+int *bgp;
 
 extern "C" void disp( int sig )
 {
@@ -33,7 +33,13 @@ extern "C" void zomboy( int sig )
 {
 int pid = wait3(0, 0, NULL);
 while(waitpid(-1, NULL, WNOHANG) > 0);
-printf("[%d] exited.\n", pid);
+
+for(int i = 0; i < 2048; i++) {
+
+	if(pid == bgp[i])
+		printf("[%d] exited.\n", pid);
+
+}
 Command::_currentCommand.prompt(); 
 }
 SimpleCommand::SimpleCommand()
@@ -283,7 +289,10 @@ Command::execute()
 	}
 	
 	else {
-	
+	int k = 0;
+	while(k < 2048 && bgp[k] != 0) k++;
+
+	bgp[k] = ret;
 	prompt();
 	}
 	// Clear to prepare for next command
@@ -313,6 +322,8 @@ int yyparse(void);
 
 main()
 {
+
+bgp = new int[2048];
 struct sigaction ctrlc;
 ctrlc.sa_handler = disp;
 sigemptyset(&ctrlc.sa_mask);
