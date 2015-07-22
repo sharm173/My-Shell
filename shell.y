@@ -22,6 +22,7 @@
 //#define yylex yylex
 
 #define MAXFILENAME 1024
+void returnerr();
 
 #include <dirent.h>
 #include <stdio.h>
@@ -278,34 +279,12 @@ char * r = reg;
         *r = '^';
         r++; // match beginning of line
         while (*a) {
-                if (*a == '*') { 
-			 *r='.';
-                       	 r++;
-                         *r='*';
-                         r++;
-                }
-                
-                else if (*a == '?') {
-                         *r='.';
-                         r++;
-                }
-
-        
-                else if (*a == '.') {
-                         *r='\\';
-                         r++;
-                         *r='.';
-                         r++;
-                }
-
-                else {
-                        *r=*a;
-                        r++;
-                }
-                
-                a++;   
+                if (*a == '*') {  *r='.'; r++; *r='*'; r++;}
+                else if (*a == '?') {*r='.';r++; }
+                else if (*a == '.') { *r='\\'; r++; *r='.'; r++; }
+		else { *r=*a; r++;}
+		 a++;   
         }                
-        
         *r='$';
         r++;
         *r=0;   // match end of line and add null char
@@ -316,7 +295,11 @@ char * r = reg;
 
 	int expbuf = regcomp(&re, regExpComplete, REG_EXTENDED|REG_NOSUB);
 
-	if(expbuf != 0)
+
+//	char *expbuf = (char*)malloc(strlen(reg));
+//	compile(reg, expbuf, &expbuf[strlen(expbuf)+1], '$');
+
+	if(expbuf == NULL)
 	{
 		perror("compile");
 		return;
@@ -343,7 +326,8 @@ while ((ent = readdir(d))!= NULL) {
 // Check if name matches
 		regmatch_t match;
                 expbuf = regexec( &re, ent->d_name, 1, &match, 0 );
-	if(expbuf == 0) {
+//	if(advance(ent->d_name, expbuf)) {
+		if (expbuf ==0 ) {
 		// Entry matches. Add name of entry
 		// that matches to the prefix and
 		// call expandWildcard(..) recursively
@@ -382,7 +366,9 @@ closedir(d);
 return;
 
 }
-
+void returnerr() {
+return;
+}
 
 
 #if 0
