@@ -22,6 +22,7 @@
 #include "command.h"
 int *bgp;
 extern char ** environ;
+
 extern "C" void disp( int sig )
 {
 //	fprintf( stderr, "\n");
@@ -42,6 +43,7 @@ for(int i = 0; i < 2048; i++) {
 }
 Command::_currentCommand.prompt(); 
 }
+
 SimpleCommand::SimpleCommand()
 {
 	// Creat available space for 5 arguments
@@ -169,21 +171,6 @@ Command::execute()
 		exit(1);
 	
 	}
-	/*
-	if(strcmp(_simpleCommands[0]->_arguments[0],"printenv") == 0) {
-	//print env variables
-	
-		char **a = environ;
-		while(*a != NULL) {
-			
-			printf(1,"%s\n",*a);
-			a++;
-		}
-	        clear();
-        	prompt();
-        	return;
-	}
-*/
 	if (strcmp(_simpleCommands[0]->_arguments[0], "setenv") == 0) {
 	int set =setenv(_simpleCommands[0]->_arguments[1], _simpleCommands[0]->_arguments[2], 1);
 	
@@ -279,19 +266,18 @@ Command::execute()
     //    close(fdout);
       //  close(fderr);
 	if(ret==0) {
-		if (!strcmp(_simpleCommands[0]->_arguments[0],"printenv")) {
+		if (strcmp(_simpleCommands[i]->_arguments[0],"printenv")==0) {
 			char **p=environ;
 			while (*p!=NULL) {
-			dprintf(1,"%s\n",*p);
+			printf("%s\n",*p);
 			p++;
+			}
+		exit(0);
 		}
-		_exit(1);
-	}
-else {
 	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
 	perror("execvp");
 	_exit(1);
-}
+
 	}
 //        dup2(fdout,1);
   //      dup2(fderr,2);
