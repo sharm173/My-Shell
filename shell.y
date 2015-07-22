@@ -57,7 +57,11 @@ argument:
 	{
 	
 //	expandWildcardsIfNecessary($1);
+if(strchr($1,'*') == NULL && strchr($1,'?') == NULL) {
+Command::_currentSimpleCommand->insertArgument($1);
+}
 
+else {
 expandWildcard(NULL,$1);
 
 if(nEntries == 0) {
@@ -106,7 +110,7 @@ nEntries++;
         free(array);
 	nEntries = 0;
 	maxEntries = 10;
-
+}
 
 		
 //	Command::_currentSimpleCommand->insertArgument($1);
