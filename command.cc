@@ -29,6 +29,13 @@ extern "C" void disp( int sig )
     Command::_currentCommand.prompt();
 }
 
+extern "C" void zomboy( int sig )
+{
+int pid = wait3(0, 0, NULL);
+while(waitpid(-1, NULL, WNOHANG) > 0);
+printf("[%d] exited.\n", pid);
+Command::_currentCommand.prompt(); 
+}
 SimpleCommand::SimpleCommand()
 {
 	// Creat available space for 5 arguments
@@ -306,8 +313,30 @@ int yyparse(void);
 
 main()
 {
+struct sigaction ctrlc;
+ctrlc.sa_handler = disp;
+sigemptyset(&ctrlc.sa_mask);
+ctrlc.sa_flags = SA_RESTART;
+int error =
+sigaction(SIGINT, &ctrlc, NULL );
+if ( error ) {
+perror( "sigaction" );
+exit( -1 );
+} 
+
+struct sigaction zombie;
+zombie.sa_handler = zomboy;
+sigemptyset(&zombie.sa_mask);
+zombie.sa_flags = SA_RESTART;
+int error2 =
+sigaction(SIGCHLD, &zombie, NULL );
+if ( error ) {
+perror( "sigaction" );
+exit( -1 );
+} 
 	Command::_currentCommand.prompt();
-	signal( SIGINT, disp );
+//	signal( SIGINT, disp );
+//	signal(SIGCHILD, zombie);
 //fprintf(stderr, "KHGLJKSERGHJLERHGL\n");
 	yyparse();
 
