@@ -62,6 +62,53 @@ SimpleCommand::insertArgument( char * argument )
 				  _numberOfAvailableArguments * sizeof( char * ) );
 	}
 	
+
+	if(strstr(argument,"$")!=NULL) {
+	char *newarg = (char*)malloc(10000);
+	char *a = argument;
+	while(*a != '\0') {
+	if(*a == '$') {
+		//expand and copy to newarg
+		char *temp = (char*) malloc(1000);
+		char *t = temp;
+		a++;
+		a++;
+		
+		while(*a != '}') {
+			*t = *a;
+			a++;
+			t++;
+		}
+		*t = '\0';
+		strcat(newarg,temp);
+		free(temp);
+		a++;	
+	}
+	
+	else {
+		//copy to newarg
+		char *temp2 = (char*) malloc(strlen(argument));
+		char *t2 = temp2;
+		
+		while(*a != '$' && *a != '\0') {
+			*t2 = *a;
+			t2++;
+			a++;
+		}
+	*t2 = '\0';
+	strcat(newarg,temp2);
+	free(temp2);
+	
+	}
+	
+	
+	}
+argument = strdup(newarg);
+	free(newarg);
+
+	}
+
+
 	_arguments[ _numberOfArguments ] = argument;
 
 	// Add NULL argument at the end
