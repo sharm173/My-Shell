@@ -20,22 +20,17 @@
 
 %{
 //#define yylex yylex
-
 #define MAXFILENAME 1024
-
 #include <dirent.h>
 #include <stdio.h>
 #include "command.h"
 #include<string.h>
 #include <regex.h>
 #include <assert.h>
-
 void yyerror(const char * s);
-void expandWildcard(char*, char*);
+void expandWildcardsIfNecessary(char*);
 int yylex();
-char** array;
-int maxEntries = 10;
-int nEntries = 0;
+
 %}
 
 %%
@@ -56,58 +51,8 @@ argument:
 	WORD
 	{
 	
-//	expandWildcardsIfNecessary($1);
-
-expandWildcard(NULL,$1);
-
-if(nEntries == 0) {
-array[nEntries] = strdup($1);
-nEntries++;
-}
-//bubble sort
-
-        for (int i=0; i < nEntries; i++) {
-                
-                for(int j = 0; j < nEntries-1; j++) {
-                        if(strcmp(array[j],array[j+1]) > 0) {
-                                //swap 
-                                char *temp = array[j];
-                                array[j] = array[j+1];
-                                array[j+1] = temp;
-
-                        }
-        
-        
-                }
-                
-        }
-        
-
-//ADD Arguments
-        for (int i = 0; i < nEntries; i++) {
-        
-                if(array[i][0] == '.') {
-        		char *arg = strdup($1);
-                        if(arg[0] == '.') {
-
-                        Command::_currentSimpleCommand->insertArgument(array[i]);
-        
-                        }
-                free(arg);
-                }
-                else {
-                Command::_currentSimpleCommand->insertArgument(array[i]);
-                                
-                }
-
-        }
-        
-        free(array);
-	nEntries = 0;
-	maxEntries = 10;
-
-
-		
+	expandWildcardsIfNecessary($1);
+	
 //	Command::_currentSimpleCommand->insertArgument($1);
 	}
 	;
@@ -215,60 +160,184 @@ yyerror(const char * s)
 }
 //ADD FUNCTIONS
 
+void expandWildcardsIfNecessary(char *arg) {
 
-void expandWildcard(char * prefix, char *suffix) {
-	if(array == NULL)
-		array = (char**)malloc(maxEntries*sizeof(char*));
+	if(strchr(arg,'*') == NULL && strchr(arg,'?') == NULL) {
+		Command::_currentSimpleCommand->insertArgument(arg);
+		return;
+	}
+	
+	char * reg = (char*)malloc(2*strlen(arg)+10);
+	char * a = arg;
+	char * r = reg;
+	*r = '^'; 
+	r++; // match beginning of line
+	while (*a) {
 
-if (suffix[0]== 0) {
-// suffix is empty. Put prefix in argument.
-//Command::_currentSimpleCommand->insertArgument(strdup(prefix));
-if(nEntries >= maxEntries)
-		{
-			maxEntries *= 2;
+		if (*a == '*') {
+			 *r='.';
+			 r++;
+			 *r='*';
+			 r++; 
+		}
+
+		else if (*a == '?') {
+			 *r='.';
+			 r++;
+		}
+
+
+		else if (*a == '.') {
+			 *r='\\';
+			 r++; 
+			 *r='.';
+			 r++;
+		}
+
+		else { 
+			*r=*a;
+			r++;
+		}
+
+		a++;
+	}
+
+	*r='$';
+	r++;
+	*r=0;   // match end of line and add null char
+
+// 2. compile regular expression. See lab3-src/regular.cc
+	
+	char regExpComplete[ 1024 ];
+        sprintf(regExpComplete, "^%s$", reg );
+	regex_t re;
+	//char * instead of int originally
+
+	int expbuf = regcomp(&re, regExpComplete, REG_EXTENDED|REG_NOSUB);
+
+	if (expbuf!=0) {
+		perror("compile");
+		return;
+	}
+
+// 3. List directory and add as arguments the entries
+// that match the regular expression
+
+	DIR * dir = opendir(".");
+	if (dir == NULL) {
+		perror("opendir");
+		return;
+	}
+
+
+
+	struct dirent * ent;
+	int nEntries = 0;
+	int maxEntries = 20;
+	char ** array = (char**) malloc(maxEntries*sizeof(char*));	
+	while ( (ent = readdir(dir))!= NULL) {
+		// Check if name matches
+		regmatch_t match;   
+        	expbuf = regexec( &re, ent->d_name, 1, &match, 0 );
+        
+		if (expbuf ==0 ) {
+			// Add argument
+		if (nEntries == maxEntries) {
+			maxEntries *=2;
 			array = (char**)realloc(array, maxEntries*sizeof(char*));
+			assert(array!=NULL);
+		}
+
+	array[nEntries]= strdup(ent->d_name);
+	nEntries++;
+		
+
+		//Command::_currentSimpleCommand->insertArgument(strdup(ent->d_name));
 		}
 		
-		array[nEntries] = strdup(prefix);
-		nEntries++;
+		else {
+		//does not match
+		
+		}
+		
+	}
+	regfree(&re);
+	closedir(dir);
+//BUBBLE SORT ARRAY
+
+	for (int i=0; i < nEntries; i++) {
+	
+		for(int j = 0; j < nEntries-1; j++) {
+			if(strcmp(array[j],array[j+1]) > 0) {
+				//swap
+				char *temp = array[j];
+				array[j] = array[j+1];
+				array[j+1] = temp;
+			
+			}
+		
+ 		
+		}
+	
+	}
+	
+
+	
+	// Add arguments
+	for (int i = 0; i < nEntries; i++) {
+	
+		if(array[i][0] == '.') {
+		
+			if(arg[0] == '.') {
+
+			Command::_currentSimpleCommand->insertArgument(array[i]);
+			
+			}
+
+		}
+		else {
+		Command::_currentSimpleCommand->insertArgument(array[i]);
+		
+		}
+		
+	}
+	
+	free(array);
+
+
+}
+
+void expandWildcard(char * prefix, char *suffix) {
+if (suffix[0]== 0) {
+// suffix is empty. Put prefix in argument.
+Command::_currentSimpleCommand->insertArgument(strdup(prefix));
 return;
 }
-
 // Obtain the next component in the suffix
 // Also advance suffix.
-
-char * s = strchr(suffix, '/');
+char * s = strchr(suffix, /);
 char component[MAXFILENAME];
-
-if (s!=NULL){          // Copy up to the first /
-
+if (s!=NULL){ // Copy up to the first /
 strncpy(component,suffix, s-suffix);
 suffix = s + 1;
-
 }
 else { // Last part of path. Copy whole thing.
-
 strcpy(component, suffix);
 suffix = suffix + strlen(suffix);
-
 }
 
 // Now we need to expand the component
-
 char newPrefix[MAXFILENAME];
 if (strchr(component,'*')==NULL && strchr(component,'?')==NULL) {
-
 // component does not have wildcards
-
 sprintf(newPrefix,"%s/%s", prefix, component);
 expandWildcard(newPrefix, suffix);
 return;
 }
 // Component has wildcards
 // Convert component to regular expression
-
 char * reg = (char*)malloc(2*strlen(component)+10); 
-char * a = component;
+char * a = arg;
 char * r = reg;
         *r = '^';
         r++; // match beginning of line
@@ -305,13 +374,11 @@ char * r = reg;
         r++;
         *r=0;   // match end of line and add null char
         
-	char regExpComplete[ 1024 ];
-        sprintf(regExpComplete, "^%s$", reg );
-        regex_t re;
 
-	int expbuf = regcomp(&re, regExpComplete, REG_EXTENDED|REG_NOSUB);
 
-	if(expbuf != 0)
+char * expbuf = (char*)malloc(strlen(reg));
+compile(reg, expbuf, &expbuf[strlen(expbuf)+1], '$');
+	if(expbuf == NULL)
 	{
 		perror("compile");
 		return;
@@ -332,13 +399,11 @@ if (d==NULL) {
 return;
 }
 
-struct dirent *ent;
+
 // Now we need to check what entries match
 while ((ent = readdir(d))!= NULL) {
 // Check if name matches
-		regmatch_t match;
-                expbuf = regexec( &re, ent->d_name, 1, &match, 0 );
-	if(expbuf == 0) {
+	if (advance(ent->d_name, expbuf) ) {
 		// Entry matches. Add name of entry
 		// that matches to the prefix and
 		// call expandWildcard(..) recursively
@@ -371,14 +436,19 @@ while ((ent = readdir(d))!= NULL) {
 			}
 		}		
 
-	}
 
-closedir(d);
+
+
+
+//		sprintf(newPrefix,"%s/%s", prefix, ent->d_name);
+//		expandWildcard(newPrefix,suffix);
+	}
+}
+
+close(d);
 return;
 
 }
-
-
 
 #if 0
 main()
