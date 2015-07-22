@@ -80,7 +80,8 @@ SimpleCommand::insertArgument( char * argument )
 			t++;
 		}
 		*t = '\0';
-		strcat(newarg,temp);
+	
+		strcat(newarg,getenv(temp));
 		free(temp);
 		a++;	
 	}
