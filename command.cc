@@ -285,7 +285,7 @@ Command::execute()
 			dprintf(1,"%s\n",*p);
 			p++;
 		}
-		exit(1);
+		exit(0);
 	}
 
 	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
