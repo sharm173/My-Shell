@@ -176,7 +176,7 @@ Command::execute()
 		char **a = environ;
 		while(*a != NULL) {
 			
-			printf("%s\n",*a);
+			printf(1,"%s\n",*a);
 			a++;
 		}
 	        clear();
@@ -282,7 +282,7 @@ Command::execute()
 		if (!strcmp(_simpleCommands[0]->_arguments[0],"printenv")) {
 			char **p=environ;
 			while (*p!=NULL) {
-			printf("%s\n",*p);
+			dprintf(1,"%s\n",*p);
 			p++;
 		}
 		exit(1);
