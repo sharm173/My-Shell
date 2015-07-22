@@ -63,12 +63,14 @@ Command::_currentSimpleCommand->insertArgument($1);
 }
 
 else {
-expandWildcard(NULL,$1);
+
+expandWildcard(NULL,strdup($1));
 
 if(nEntries == 0) {
 array[nEntries] = strdup($1);
 nEntries++;
 }
+
 //bubble sort
 
         for (int i=0; i < nEntries; i++) {
@@ -245,25 +247,18 @@ return;
 
 char * s = strchr(suffix, '/');
 char component[MAXFILENAME];
-
 if (s!=NULL){          // Copy up to the first /
-
 strncpy(component,suffix, s-suffix);
 suffix = s + 1;
-
 }
 else { // Last part of path. Copy whole thing.
-
 strcpy(component, suffix);
 suffix = suffix + strlen(suffix);
-
 }
 
 // Now we need to expand the component
-
 char newPrefix[MAXFILENAME];
 if (strchr(component,'*')==NULL && strchr(component,'?')==NULL) {
-
 // component does not have wildcards
 
 sprintf(newPrefix,"%s/%s", prefix, component);
@@ -285,49 +280,43 @@ char * r = reg;
 		else { *r=*a; r++;}
 		 a++;   
         }                
-        *r='$';
-        r++;
-        *r=0;   // match end of line and add null char
-        
+        *r='$'; r++; *r=0;   // match end of line and add null char
+
+//complie regex
+
 	char regExpComplete[ 1024 ];
         sprintf(regExpComplete, "^%s$", reg );
         regex_t re;
 
 	int expbuf = regcomp(&re, regExpComplete, REG_EXTENDED|REG_NOSUB);
 
-
-//	char *expbuf = (char*)malloc(strlen(reg));
-//	compile(reg, expbuf, &expbuf[strlen(expbuf)+1], '$');
-
-	if(expbuf == NULL)
+	if(expbuf != 0)
 	{
 		perror("compile");
 		return;
 	}
 
-char * dir;
-// If prefix is empty then list current directory
-if (prefix == NULL) dir ="."; 
-else if(!strcmp("", prefix))
-	{
-		dir = strdup("/");
+	char * dir;
+	// If prefix is empty then list current directory
+	
+	if (prefix == NULL) dir ="."; 
+	else if(!strcmp("", prefix)) dir = strdup("/");
+	else dir=prefix;
+
+	DIR * d=opendir(dir);
+	if (d==NULL) {
+	perror("opendir"); 
+	return;
 	}
-else dir=prefix;
 
-DIR * d=opendir(dir);
-if (d==NULL) {
-//perror("opendir"); 
-return;
-}
-
-struct dirent *ent;
-// Now we need to check what entries match
-while ((ent = readdir(d))!= NULL) {
-// Check if name matches
+	struct dirent *ent;
+	// Now we need to check what entries match
+	while ((ent = readdir(d))!= NULL) {
+		// Check if name matches
 		regmatch_t match;
                 expbuf = regexec( &re, ent->d_name, 1, &match, 0 );
 //	if(advance(ent->d_name, expbuf)) {
-		if (expbuf ==0 ) {
+		if (expbuf == 0 ) {
 		// Entry matches. Add name of entry
 		// that matches to the prefix and
 		// call expandWildcard(..) recursively
