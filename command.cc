@@ -169,7 +169,7 @@ Command::execute()
 		exit(1);
 	
 	}
-	
+	/*
 	if(strcmp(_simpleCommands[0]->_arguments[0],"printenv") == 0) {
 	//print env variables
 	
@@ -183,7 +183,7 @@ Command::execute()
         	prompt();
         	return;
 	}
-
+*/
 	if (strcmp(_simpleCommands[0]->_arguments[0], "setenv") == 0) {
 	int set =setenv(_simpleCommands[0]->_arguments[1], _simpleCommands[0]->_arguments[2], 1);
 	
@@ -279,6 +279,15 @@ Command::execute()
     //    close(fdout);
       //  close(fderr);
 	if(ret==0) {
+		if (!strcmp(_simpleCommands[0]->_arguments[0],"printenv")) {
+			char **p=environ;
+			while (*p!=NULL) {
+			printf("%s",*p);
+			p++;
+		}
+		exit(0);
+	}
+
 	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
 	perror("execvp");
 	_exit(1);
