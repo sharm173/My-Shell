@@ -302,7 +302,7 @@ char * r = reg;
 	if (prefix == NULL) dir ="."; 
 	else if(!strcmp("", prefix)) dir = strdup("/");
 	else dir=prefix;
-
+	printf("%s", dir);
 	DIR * d=opendir(dir);
 	if (d==NULL) {
 	perror("opendir"); 
