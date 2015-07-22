@@ -21,7 +21,7 @@
 #include <pwd.h>
 #include "command.h"
 int *bgp;
-
+extern char ** environ;
 extern "C" void disp( int sig )
 {
 //	fprintf( stderr, "\n");
