@@ -287,10 +287,11 @@ Command::execute()
 		}
 		exit(0);
 	}
-
+else {
 	execvp(_simpleCommands[i]->_arguments[0], _simpleCommands[i]->_arguments); //possible bug
 	perror("execvp");
 	_exit(1);
+}
 	}
 //        dup2(fdout,1);
   //      dup2(fderr,2);
