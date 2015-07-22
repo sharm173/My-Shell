@@ -110,6 +110,22 @@ argument = strdup(newarg);
 	}
 
 
+if (strstr(argument,"~") != NULL)
+    {
+        if ((argument[1]) == '\0')
+        {
+            argument = strdup(getenv("HOME"));
+        }
+        else
+        {
+	char *a = argument;
+	a++;
+
+	struct passwd *pwd = getpwnam(a);
+            argument = strdup(pwd->pw_dir);
+        }
+    }
+
 	_arguments[ _numberOfArguments ] = argument;
 
 	// Add NULL argument at the end
