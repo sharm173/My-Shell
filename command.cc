@@ -192,6 +192,13 @@ Command::execute()
 	prompt();
 	return;
 	}
+
+	if (strcmp(_simpleCommands[0]->_arguments[0], "unsetenv") == 0) {
+	if(unsetenv(_simpleCommands[0]->_arguments[1]) != 0) return perror("unsetenv");
+        clear();
+        prompt();
+        return;
+	}
 	
 //print("\n");
 	// Print contents of Command data structure
