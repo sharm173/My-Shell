@@ -93,7 +93,8 @@ nEntries++;
                         Command::_currentSimpleCommand->insertArgument(array[i]);
         
                         }
-                free(arg);
+                //free(arg);
+		arg = NULL;
                 }
                 else {
                 Command::_currentSimpleCommand->insertArgument(array[i]);
